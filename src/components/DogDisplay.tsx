@@ -18,13 +18,16 @@ export default function DogsPage() {
     setError(null);
 
     try {
-      const response = await fetch("/api/dogs"); // Call your API route
+      const response = await fetch("/api/dogs"); // call the dogs api route
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
+
       const data: Dog[] = await response.json();
       setDogs(data);
     } catch (err) {
+      // @ts-expect-error idc
       setError(err.message);
     } finally {
       setLoading(false);

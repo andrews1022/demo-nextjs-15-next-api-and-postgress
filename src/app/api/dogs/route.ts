@@ -1,6 +1,7 @@
 import { pool } from "@/lib/db";
 import { NextResponse } from "next/server";
 
+// fetch all dogs from the database
 export const GET = async () => {
   try {
     const queryString = "SELECT id, created_at, breed FROM dogs ORDER BY created_at DESC";
