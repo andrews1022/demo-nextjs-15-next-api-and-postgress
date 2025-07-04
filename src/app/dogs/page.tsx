@@ -1,10 +1,8 @@
-// import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
-// import type { Dog } from "@/types/dog";
+import AddDogForm from "@/components/AddDogForm";
 import DogsTable from "@/components/DogsTable";
-import DogsForm from "@/components/DogsForm";
 
 const getAllDogs = async () => {
   try {
@@ -47,7 +45,7 @@ const DogsPage = () => {
     <div>
       <h2>All Dogs</h2>
 
-      <DogsForm />
+      <AddDogForm />
 
       <br />
 

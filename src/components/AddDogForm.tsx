@@ -1,6 +1,6 @@
 import { addDogBreed } from "@/lib/actions";
 
-const DogsForm = () => {
+const AddDogForm = () => {
   return (
     // a simple form to add a new dog to the database
     <form action={addDogBreed}>
@@ -11,4 +11,4 @@ const DogsForm = () => {
   );
 };
 
-export default DogsForm;
+export default AddDogForm;
