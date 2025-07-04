@@ -1,13 +1,13 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const GET = async (request: Request) => {
-  // For example, fetch data from your DB here
-  const users = [
-    { id: 1, name: "Alice" },
-    { id: 2, name: "Bob" },
-  ];
+import { pool } from "@/lib/db";
+import { NextResponse } from "next/server";
 
-  return new Response(JSON.stringify(users), {
-    status: 200,
-    headers: { "Content-Type": "application/json" },
-  });
+export const GET = async () => {
+  try {
+    const queryString = "SELECT id, created_at, breed FROM dogs ORDER BY created_at DESC";
+    const result = await pool.query(queryString);
+    return NextResponse.json(result.rows);
+  } catch (error) {
+    console.error("Error fetching dogs:", error);
+    return NextResponse.json({ error: "Failed to fetch dogs" }, { status: 500 });
+  }
 };
