@@ -27,3 +27,14 @@ export const updateDogBreed = async (formData: FormData) => {
   const queryString = "UPDATE dogs SET breed = $1 WHERE id = $2 RETURNING id, created_at, breed";
   await pool.query(queryString, [breed, id]);
 };
+
+export const deleteDogBreed = async (id: string) => {
+  if (!id) {
+    throw new Error("ID is required");
+  }
+
+  const queryString = "DELETE FROM dogs WHERE id = $1";
+  await pool.query(queryString, [id]);
+
+  revalidatePath("/dogs");
+};

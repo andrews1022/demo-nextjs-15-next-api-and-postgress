@@ -5,7 +5,11 @@ import { use } from "react";
 import DogTableRow from "@/components/DogTableRow";
 import type { Dog } from "@/types/dog";
 
-const DogsTable = ({ dogs }: { dogs: Promise<Dog[]> }) => {
+type DogsTableProps = {
+  dogs: Promise<Dog[]>;
+};
+
+const DogsTable = ({ dogs }: DogsTableProps) => {
   const allDogs = use(dogs);
 
   return (
@@ -16,7 +20,6 @@ const DogsTable = ({ dogs }: { dogs: Promise<Dog[]> }) => {
           <th>Edit</th>
           <th>Delete</th>
           <th>ID</th>
-          <th>Created At</th>
         </tr>
       </thead>
 

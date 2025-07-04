@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import type { FormEvent } from "react";
 
-import { updateDogBreed } from "@/lib/actions";
+import { deleteDogBreed, updateDogBreed } from "@/actions/dogs";
 import type { Dog } from "@/types/dog";
 
 type DogTableRowProps = {
@@ -15,8 +15,18 @@ const DogTableRow = ({ dog }: DogTableRowProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [inputValue, setInputValue] = useState(dog.breed);
 
-  const handleOnDeleteClick = (id: string) => {
-    console.log("delete button clicked!", id);
+  const handleOnDeleteClick = async (id: string) => {
+    const confirmed = window.confirm("Are you sure you want to delete this dog breed?");
+
+    // if user confirms, proceed with deletion
+    if (confirmed) {
+      try {
+        await deleteDogBreed(id);
+      } catch (error) {
+        console.error("Error fetching dogs:", error);
+        return null; // return null on any fetch error
+      }
+    }
   };
 
   // optimistic update handler
@@ -74,6 +84,7 @@ const DogTableRow = ({ dog }: DogTableRowProps) => {
           </button>
         ) : null}
       </td>
+
       <td>
         <button disabled={isEditing} onClick={() => handleOnDeleteClick(dog.id)} type="button">
           Delete
@@ -81,7 +92,6 @@ const DogTableRow = ({ dog }: DogTableRowProps) => {
       </td>
 
       <td>{dog.id}</td>
-      <td>{new Date(dog.created_at).toLocaleString()}</td>
     </tr>
   );
 };

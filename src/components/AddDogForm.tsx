@@ -1,4 +1,4 @@
-import { addDogBreed } from "@/lib/actions";
+import { addDogBreed } from "@/actions/dogs";
 
 const AddDogForm = () => {
   return (
