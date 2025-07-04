@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Inter } from "next/font/google";
 
 import type { Metadata } from "next";
@@ -17,7 +18,13 @@ type RootLayoutProps = {
 const RootLayout = ({ children }: RootLayoutProps) => {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        <Link href="/">Home</Link>
+
+        <h1>Dogs!</h1>
+
+        {children}
+      </body>
     </html>
   );
 };
