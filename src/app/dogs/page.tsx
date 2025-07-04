@@ -1,12 +1,13 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import type { Dog } from "@/types/dog";
 
-const getDog = async (id: string): Promise<Dog | null> => {
+const getAllDogs = async (): Promise<Dog[] | null> => {
   try {
     // we need the full absolute URL here since this file runs on the server
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-    const response = await fetch(`${baseUrl}/api/dogs/${id}`, {
+    const response = await fetch(`${baseUrl}/api/dogs`, {
       cache: "no-store",
     });
 
@@ -26,39 +27,30 @@ const getDog = async (id: string): Promise<Dog | null> => {
 
     return response.json();
   } catch (error) {
-    console.error(`Error fetching dog with ID ${id}:`, error);
+    console.error("Error fetching dogs:", error);
     return null; // Return null on any fetch error
   }
 };
 
-type DogPageProps = {
-  params: Promise<{ id: string }>;
-};
+const DogsPage = async () => {
+  const dogs = await getAllDogs();
 
-const DogPage = async ({ params }: DogPageProps) => {
-  // we await the params as suggested by Next.js documentation
-  // https://nextjs.org/docs/app/getting-started/fetching-data#examples
-  const { id } = await params;
-
-  const dog = await getDog(id);
-
-  if (!dog) {
-    // Next.js `notFound()` function displays the not-found.tsx page
-    // if you have one, or the default Next.js 404 page.
+  if (!dogs) {
     notFound();
-    // notFound() does not require you to use return notFound()
   }
 
   return (
     <div>
-      <h2>Dog Details</h2>
-      <p>
-        Name (Breed): <strong>{dog.breed}</strong>
-      </p>
-      <p>ID: {dog.id}</p>
-      <p>Created At: {new Date(dog.created_at).toLocaleString()}</p>
+      <h2>All Dogs</h2>
+      <ul>
+        {dogs.map((dog) => (
+          <li key={dog.id}>
+            <Link href={`/dogs/${dog.id}`}>{dog.breed}</Link>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };
 
-export default DogPage;
+export default DogsPage;

@@ -1,8 +1,10 @@
-import Link from "next/link";
 import { Inter } from "next/font/google";
 
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+
+import AppHeader from "@/components/AppHeader";
+import AppFooter from "@/components/AppFooter";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,11 +21,13 @@ const RootLayout = ({ children }: RootLayoutProps) => {
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Link href="/">Home</Link>
+        <AppHeader />
 
         <h1>Dogs!</h1>
 
         {children}
+
+        <AppFooter />
       </body>
     </html>
   );

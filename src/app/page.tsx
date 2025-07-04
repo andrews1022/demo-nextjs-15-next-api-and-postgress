@@ -1,7 +1,5 @@
-import DogDisplay from "@/components/DogDisplay";
-
 const HomePage = () => {
-  return <DogDisplay />;
+  return <p>Homepage</p>;
 };
 
 export default HomePage;
