@@ -1,11 +1,12 @@
 // import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
-import type { Dog } from "@/types/dog";
+// import type { Dog } from "@/types/dog";
 import DogsTable from "@/components/DogsTable";
 import DogsForm from "@/components/DogsForm";
 
-const getAllDogs = async (): Promise<Dog[] | null> => {
+const getAllDogs = async () => {
   try {
     // we need the full absolute URL here since this file runs on the server
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
@@ -34,8 +35,9 @@ const getAllDogs = async (): Promise<Dog[] | null> => {
   }
 };
 
-const DogsPage = async () => {
-  const dogs = await getAllDogs();
+const DogsPage = () => {
+  // NOTE: don't await the data fetching function
+  const dogs = getAllDogs();
 
   if (!dogs) {
     notFound();
@@ -46,7 +48,12 @@ const DogsPage = async () => {
       <h2>All Dogs</h2>
 
       <DogsForm />
-      <DogsTable dogs={dogs} />
+
+      <br />
+
+      <Suspense fallback={<div>Loading dogs...</div>}>
+        <DogsTable dogs={dogs} />
+      </Suspense>
     </div>
   );
 };

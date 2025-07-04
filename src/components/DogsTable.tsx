@@ -1,15 +1,21 @@
 "use client";
 
 import Link from "next/link";
-// import { useState } from "react";
+import { use } from "react";
 
 import type { Dog } from "@/types/dog";
 
-type DogsTableProps = {
-  dogs: Dog[];
-};
+const DogsTable = ({ dogs }: { dogs: Promise<Dog[]> }) => {
+  const allDogs = use(dogs);
 
-const DogsTable = ({ dogs }: DogsTableProps) => {
+  const handleOnEditClick = (id: string) => {
+    console.log("edit button clicked!", id);
+  };
+
+  const handleOnDeleteClick = (id: string) => {
+    console.log("delete button clicked!", id);
+  };
+
   return (
     <table>
       <thead>
@@ -23,7 +29,7 @@ const DogsTable = ({ dogs }: DogsTableProps) => {
       </thead>
 
       <tbody>
-        {dogs.map((dog) => (
+        {allDogs.map((dog) => (
           <tr key={dog.id}>
             <td>
               <Link href={`/dogs/${dog.id}`}>{dog.breed}</Link>
@@ -31,10 +37,14 @@ const DogsTable = ({ dogs }: DogsTableProps) => {
             <td>{dog.id}</td>
             <td>{new Date(dog.created_at).toLocaleString()}</td>
             <td>
-              <button type="button">Edit</button>
+              <button onClick={() => handleOnEditClick(dog.id)} type="button">
+                Edit
+              </button>
             </td>
             <td>
-              <button type="button">Delete</button>
+              <button onClick={() => handleOnDeleteClick(dog.id)} type="button">
+                Delete
+              </button>
             </td>
           </tr>
         ))}
