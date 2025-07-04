@@ -1,7 +1,9 @@
-import Link from "next/link";
+// import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import type { Dog } from "@/types/dog";
+import DogsTable from "@/components/DogsTable";
+import DogsForm from "@/components/DogsForm";
 
 const getAllDogs = async (): Promise<Dog[] | null> => {
   try {
@@ -42,13 +44,9 @@ const DogsPage = async () => {
   return (
     <div>
       <h2>All Dogs</h2>
-      <ul>
-        {dogs.map((dog) => (
-          <li key={dog.id}>
-            <Link href={`/dogs/${dog.id}`}>{dog.breed}</Link>
-          </li>
-        ))}
-      </ul>
+
+      <DogsForm />
+      <DogsTable dogs={dogs} />
     </div>
   );
 };
