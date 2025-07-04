@@ -38,7 +38,8 @@ type DogPageProps = {
 };
 
 const DogPage = async ({ params }: DogPageProps) => {
-  // we await the params
+  // we await the params as suggested by Next.js documentation
+  // https://nextjs.org/docs/app/getting-started/fetching-data#examples
   const { id } = await params;
 
   const dog = await getDog(id);
@@ -47,6 +48,7 @@ const DogPage = async ({ params }: DogPageProps) => {
     // Next.js `notFound()` function displays the not-found.tsx page
     // if you have one, or the default Next.js 404 page.
     notFound();
+    // notFound() does not require you to use return notFound()
   }
 
   return (
