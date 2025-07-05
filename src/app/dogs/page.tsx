@@ -3,33 +3,22 @@ import { Suspense } from "react";
 
 import AddDogForm from "@/components/AddDogForm";
 import DogsTable from "@/components/DogsTable";
+import { pool } from "@/lib/db";
+import type { Dog } from "@/types/dog";
 
-const getAllDogs = async () => {
+const getAllDogs = async (): Promise<Dog[] | null> => {
   try {
-    // we need the full absolute URL here since this file runs on the server
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-    const response = await fetch(`${baseUrl}/api/dogs`, {
-      cache: "no-store",
-    });
+    const queryString = "SELECT id, created_at, breed FROM dogs ORDER BY created_at DESC";
+    const result = await pool.query(queryString);
 
-    // If the response is not OK (e.g., 404, 500), throw an error
-    // This will be caught by the outer try-catch
-    if (!response.ok) {
-      // You might want to check response.status specifically for 404 here
-      // and return null if it's a 404 to trigger notFound() later
-
-      // For now, throwing an error covers all non-OK responses
-      if (response.status === 404) {
-        return null; // specifically return null for 404 to trigger notFound()
-      }
-
-      throw new Error(`Failed to fetch dog data: ${response.status} ${response.statusText}`);
+    if (result.rows.length === 0) {
+      console.error("No dogs found in the database.");
+      return null; // Return null if no dogs are found
     }
-
-    return response.json();
+    return result.rows;
   } catch (error) {
     console.error("Error fetching dogs:", error);
-    return null; // Return null on any fetch error
+    return null; // Return null if no dogs are found
   }
 };
 
@@ -38,6 +27,8 @@ const DogsPage = () => {
   const dogs = getAllDogs();
 
   if (!dogs) {
+    // if no dogs are found, trigger the notFound() function
+    // this will render the 404 page
     notFound();
   }
 

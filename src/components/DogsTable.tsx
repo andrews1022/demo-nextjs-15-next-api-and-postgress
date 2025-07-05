@@ -6,7 +6,7 @@ import DogTableRow from "@/components/DogTableRow";
 import type { Dog } from "@/types/dog";
 
 type DogsTableProps = {
-  dogs: Promise<Dog[]>;
+  dogs: Promise<Dog[] | null>;
 };
 
 const DogsTable = ({ dogs }: DogsTableProps) => {
@@ -24,7 +24,7 @@ const DogsTable = ({ dogs }: DogsTableProps) => {
       </thead>
 
       <tbody>
-        {allDogs.map((dog) => (
+        {allDogs?.map((dog) => (
           <DogTableRow key={dog.id} dog={dog} />
         ))}
       </tbody>

@@ -1,33 +1,24 @@
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
+import { pool } from "@/lib/db";
 import type { Dog } from "@/types/dog";
 
 const getDog = async (id: string): Promise<Dog | null> => {
   try {
-    // we need the full absolute URL here since this file runs on the server
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-    const response = await fetch(`${baseUrl}/api/dogs/${id}`, {
-      cache: "no-store",
-    });
+    const queryString = "SELECT id, created_at, breed FROM dogs WHERE id = $1";
+    const result = await pool.query(queryString, [id]);
 
-    // If the response is not OK (e.g., 404, 500), throw an error
-    // This will be caught by the outer try-catch
-    if (!response.ok) {
-      // You might want to check response.status specifically for 404 here
-      // and return null if it's a 404 to trigger notFound() later
-
-      // For now, throwing an error covers all non-OK responses
-      if (response.status === 404) {
-        return null; // specifically return null for 404 to trigger notFound()
-      }
-
-      throw new Error(`Failed to fetch dog data: ${response.status} ${response.statusText}`);
+    if (result.rows.length === 0) {
+      console.error(`No dog found with ID: ${id}`);
+      return null; // Return null if no dog is found with the specified ID
     }
 
-    return response.json();
+    // otherwise, return the first row (the dog with the specified ID)
+    return result.rows[0];
   } catch (error) {
     console.error(`Error fetching dog with ID ${id}:`, error);
-    return null; // Return null on any fetch error
+    return null; // Return null in case of an error
   }
 };
 
@@ -50,14 +41,16 @@ const DogPage = async ({ params }: DogPageProps) => {
   }
 
   return (
-    <div>
-      <h2>Dog Details</h2>
-      <p>
-        Name (Breed): <strong>{dog.breed}</strong>
-      </p>
-      <p>ID: {dog.id}</p>
-      <p>Created At: {new Date(dog.created_at).toLocaleString()}</p>
-    </div>
+    <Suspense fallback={<div>Loading dog details...</div>}>
+      <div>
+        <h2>Dog Details</h2>
+        <p>
+          Name (Breed): <strong>{dog.breed}</strong>
+        </p>
+        <p>ID: {dog.id}</p>
+        <p>Created At: {new Date(dog.created_at).toLocaleString()}</p>
+      </div>
+    </Suspense>
   );
 };
 
