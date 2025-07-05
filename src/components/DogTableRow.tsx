@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import type { FormEvent } from "react";
 
+import UpdateDogForm from "@/components/UpdateDogForm";
 import { deleteDogBreed, updateDogBreed } from "@/actions/dogs";
 import type { Dog } from "@/types/dog";
 
@@ -15,18 +16,8 @@ const DogTableRow = ({ dog }: DogTableRowProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [inputValue, setInputValue] = useState(dog.breed);
 
-  const handleOnDeleteClick = async (id: string) => {
-    const confirmed = window.confirm("Are you sure you want to delete this dog breed?");
-
-    // if user confirms, proceed with deletion
-    if (confirmed) {
-      try {
-        await deleteDogBreed(id);
-      } catch (error) {
-        console.error("Error fetching dogs:", error);
-        return null; // return null on any fetch error
-      }
-    }
+  const handleOnInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(event.target.value);
   };
 
   // optimistic update handler
@@ -50,28 +41,30 @@ const DogTableRow = ({ dog }: DogTableRowProps) => {
     }
   };
 
+  const handleOnDeleteClick = async (id: string) => {
+    const confirmed = window.confirm("Are you sure you want to delete this dog breed?");
+
+    // if user confirms, proceed with deletion
+    if (confirmed) {
+      try {
+        await deleteDogBreed(id);
+      } catch (error) {
+        console.error("Error fetching dogs:", error);
+        return null; // return null on any fetch error
+      }
+    }
+  };
+
   return (
     <tr key={dog.id}>
       <td>
         {isEditing ? (
-          <form onSubmit={handleOnSubmit}>
-            <label hidden htmlFor="breed">
-              Breed:
-            </label>
-            <input
-              type="text"
-              id="breed"
-              name="breed"
-              required
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-            />
-            <label hidden htmlFor="id">
-              ID:
-            </label>
-            <input hidden type="text" id="id" name="id" required value={dog.id} readOnly />
-            <button type="submit">Save</button>
-          </form>
+          <UpdateDogForm
+            dogId={dog.id}
+            handleOnInputChange={handleOnInputChange}
+            handleOnSubmit={handleOnSubmit}
+            inputValue={inputValue}
+          />
         ) : (
           <Link href={`/dogs/${dog.id}`}>{inputValue}</Link>
         )}
