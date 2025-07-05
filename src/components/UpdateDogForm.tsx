@@ -4,11 +4,11 @@
 
 "use client";
 
-import type { FormEvent } from "react";
+import type { ChangeEvent, FormEvent } from "react";
 
 type UpdateDogFormProps = {
   dogId: string;
-  handleOnInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleOnInputChange: (event: ChangeEvent<HTMLInputElement>) => void;
   handleOnSubmit: (event: FormEvent<HTMLFormElement>) => Promise<null | undefined>;
   inputValue: string;
 };
